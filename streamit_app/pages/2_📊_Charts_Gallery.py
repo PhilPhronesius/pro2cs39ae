@@ -178,3 +178,49 @@ for i, f in enumerate(read3, start=1):
 st.markdown("### Observations/Insights:")
 for i, f in enumerate(insight3, start=1):
     st.write(f"- {f}")
+
+
+st.title("Most Played Video Game by Country")
+st.caption("A world map visualizing which game dominates in each country based on player count or popularity data.")
+
+# Load data for the map (make sure you have this CSV)
+geo_df = pd.read_csv("most_played_game_by_country.csv")
+
+# Handle missing values for player counts
+geo_df["Players (millions)"].fillna(0, inplace=True)
+
+# Create the Plotly choropleth map
+fig_geo = px.choropleth(
+    geo_df,
+    locations="Country",      
+
+st.plotly_chart(fig_rating, use_container_width = True)
+
+statement3 = [
+    "The donut chart above helps answering our questions of if a higher budget increases player enjoyment. It also answers if the video games have won GOTY due to its quality and how downloadable content (DLC) may influence profitability."
+]
+
+read3 = [
+    "The infographic donut chart above shows how well-received the video games are by the public.",
+    "The color green indicates the proportion of positive reviews/ratings since each games' release.",
+    "The color red indicates the proportion of negative reviews/ratings since each games' release.",
+    "The data is compiled from IMDb and reflects audience ratings from across multiple platforms."
+]
+
+insight3 = [
+    "",
+    "",
+    ""
+]
+
+st.markdown("### Statement:")
+for i, f in enumerate(statement3, start=1):
+    st.write(f"- {f}")
+
+st.markdown("### How to read this chart:")
+for i, f in enumerate(read3, start=1):
+    st.write(f"- {f}")
+
+st.markdown("### Observations/Insights:")
+for i, f in enumerate(insight3, start=1):
+    st.write(f"- {f}")
