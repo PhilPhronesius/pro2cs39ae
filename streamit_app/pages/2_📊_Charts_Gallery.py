@@ -116,7 +116,7 @@ top10 = df.sort_values("Adjusted Rank").head(10)
 
 donut_df = top10[["College Name", "Tuition"]]
 
-fig_rating = px.pie(donut_df, names = "College Name", values = "College Name",
+fig_rating = px.pie(donut_df, names = "College Name", values = "Tuition",
                     title = "Top 10 Colleges — Tuition Distribution",
                     hole = 0.4)
 
