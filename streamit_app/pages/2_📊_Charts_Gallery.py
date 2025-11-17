@@ -131,7 +131,7 @@ st.caption("Visualizing how tuition amounts compare among the highest-ranked col
 
 top6 = df.sort_values("Adjusted Rank").head(6)
 
-donut_df = top10[["College Name", "Tuition"]]
+donut_df = top6[["College Name", "Tuition"]]
 
 fig_rating = px.pie(donut_df, names = "College Name", values = "Tuition",
                     title = "Top 6 Colleges — Tuition Distribution",
