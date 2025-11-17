@@ -4,8 +4,6 @@ from PIL import Image, ImageOps
 
 st.title("Bio Page")
 
-st.markdown("Phil Phronesius")
-
 # ---------- TODO: Replace with your own info ----------
 st.markdown("""
 I am a student with a strong interest in educational data and higher education trends. 
