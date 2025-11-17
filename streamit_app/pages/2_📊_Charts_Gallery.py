@@ -32,7 +32,7 @@ df["Color"] = df["Adjusted Rank"].apply(lambda x: "gold" if x <= 10 else "blue")
 college_options = df["College Name"].unique()
 selected_college = st.selectbox("Select College"), options = ["All Colleges"] + list(college_options), index = 0)
 
-if selected_college != "All Colleges"]:
+if selected_college != "All Colleges":
     filtered_df = df[df["College Name"] == selected_college]
 else:
     filtered_df = df
