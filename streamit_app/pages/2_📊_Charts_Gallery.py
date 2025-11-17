@@ -146,7 +146,8 @@ statement3 = [
 read3 = [
     "Each slice represents the tuition of one of the top 10 colleges.",
     "Larger slices indicate higher tuition costs.",
-    "This helps compare elite college affordability."
+    "This helps compare elite college affordability.",
+    "Hover mode is available."
 ]
 
 insight3 = [
@@ -213,7 +214,8 @@ statement4 = [
 read4 = [
     "The first chart shows average tuition by rank tier.",
     "The second chart shows total enrollment by rank tier.",
-    "Rank tiers are divided into Top 10, 11-50, and 51+."
+    "Rank tiers are divided into Top 10, 11-50, and 51+.",
+    "Hover mode is available."
 ]
 
 insight4 = [
