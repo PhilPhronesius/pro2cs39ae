@@ -4,7 +4,7 @@ from PIL import Image, ImageOps
 
 st.title("Bio Page")
 
-NAME = "Phil Phronesius"
+st.markdown("Phil Phronesius")
 
 # ---------- TODO: Replace with your own info ----------
 st.markdown("""
