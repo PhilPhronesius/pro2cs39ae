@@ -22,6 +22,7 @@ st.subheader("Reflection")
 
 st.markdown("""
 - The Lab 4.3 prototype was mostly static and focused on individual charts, whereas the final build is **interactive** and filter-driven.
+- Some of the visualiztion charts had to be changed in order to properly produce graphs.
 - Linked filters allow users to explore **multiple KPIs simultaneously**, improving usability and insight generation.
 - Added narrative and accessibility considerations to make visualizations **more interpretable and inclusive**.
 - The final dashboard integrates **real-world US college data (>100 rows)** instead of mock data, enabling reproducible insights.
