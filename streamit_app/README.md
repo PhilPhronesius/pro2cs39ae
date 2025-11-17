@@ -8,6 +8,10 @@ This app allows users to explore a variety of insights about U.S. colleges in 20
 - **Rank Tiers**: Understand how tuition and enrollment vary within different rank tiers (Top 10, 11-50, 51+).
 - **Interactive Dashboards**: The app provides filters and interactive charts to explore and analyze the data.
 
+## Name and Contact
+Name: Phil Phronesius
+Email: ephrones@msudenver.edu
+
 ## Pages in the App
 
 ### 1. **Bio Page**
