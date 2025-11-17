@@ -72,7 +72,7 @@ st.caption("Visualizing how enrollment size compares across ranking positions.")
 
 rank_enroll_df = df.sort_values("Adjusted Rank").head(20)
 
-fig_sales = px.line(filtered_sales_df, x = "Adjusted Rank", y = "Enrollment Numbers",
+fig_sales = px.line(rank_enroll_df, x = "Adjusted Rank", y = "Enrollment Numbers",
                     title = "Enrollment Numbers by College Ranking",
                     labels = {"Adjusted Rank": "Rank", "Enrollment Numbers": "Enrollment"},
                     hover_name = "College Name", color="College Name")
