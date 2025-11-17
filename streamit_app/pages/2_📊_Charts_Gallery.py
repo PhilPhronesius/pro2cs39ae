@@ -86,7 +86,7 @@ heatmap_df = df.pivot_table(index="College Name", values="Enrollment Numbers", a
 
 # Create heatmap
 fig_heatmap = px.imshow(
-    heatmap_df,
+    heatmap_df.T,
     labels={"x": "College", "y": "Enrollment Numbers"},
     color_continuous_scale="YlGnBu",
     title="Enrollment Heatmap by College and Rank"
