@@ -2,16 +2,16 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from datetime import datetime
 
 # ---------------------------
 # Page Configuration
-# ---------------------------
-st.set_page_config(page_title="Video Game Dashboard", page_icon="📊", layout="wide")
+st.set_page_config(page_title="US College Dashboard", page_icon="🎓", layout="wide")
 
-st.title("🎮 Global Video Game Dashboard")
-st.caption("Explore development costs, global sales, ratings, and most-played games around the world (2015–2024).")
+st.title("🎓 US College Dashboard")
+st.caption("Explore tuition, enrollment, rankings, and geographic distribution of US colleges (2022 dataset).")
 
-# Remove chart fade animation for smoother reruns
+# Remove chart fade animation
 st.markdown("""
     <style>
       [data-testid="stPlotlyChart"], .stPlotlyChart, .stElementContainer {
@@ -21,135 +21,109 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+df = pd.read_csv("data/2022USCollegeRankings.csv")
 
-# =======================================
-# SECTION 1: Development Costs (Bar Chart)
-# =======================================
-st.subheader("💸 Cost of Video Game Development")
+# Fill missing tuition with median
+df["Tuition"].fillna(df["Tuition"].median(), inplace=True)
 
-df = pd.read_csv("data/top10.csv")
+# ---------------------------
+# Sidebar Filters
+st.sidebar.header("Filters")
 
-# Clean up missing data
-median_cost = df["Cost of Development"].median()
-df["Cost of Development"].fillna(median_cost, inplace=True)
-df["Color"] = df["GOTY"].apply(lambda x: "gold" if x == 1 else "blue")
+state_options = df["State"].sort_values().unique()
+selected_states = st.sidebar.multiselect("Select State(s)", options=state_options, default=state_options)
 
-fig_cost = px.bar(
-    df,
-    x="Cost of Development",
-    y="Video Games",
-    color="Color",
-    title="Development Costs of Popular Video Games",
-    labels={"Video Games": "Video Games", "Cost of Development": "Development Cost ($)"},
-    color_discrete_map={"gold": "gold", "blue": "blue"},
-    hover_name="Video Games",
-    hover_data=["Cost of Development"]
+tuition_min, tuition_max = int(df["Tuition"].min()), int(df["Tuition"].max())
+selected_tuition = st.sidebar.slider("Tuition Range ($)", tuition_min, tuition_max, (tuition_min, tuition_max))
+
+rank_min, rank_max = int(df["Adjusted Rank"].min()), int(df["Adjusted Rank"].max())
+selected_rank = st.sidebar.slider("Rank Range", rank_min, rank_max, (rank_min, rank_max))
+
+# Apply filters
+filtered_df = df[
+    (df["State"].isin(selected_states)) &
+    (df["Tuition"].between(*selected_tuition)) &
+    (df["Adjusted Rank"].between(*selected_rank))
+]
+
+# ---------------------------
+# KPIs
+st.subheader("Key Metrics")
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("Total Colleges", len(filtered_df))
+col2.metric("Median Tuition ($)", int(filtered_df["Tuition"].median()))
+col3.metric("Median Rank", int(filtered_df["Adjusted Rank"].median()))
+col4.metric("Average Enrollment", int(filtered_df["Enrollment Numbers"].median()))
+
+# ---------------------------
+# Visual 1: Tuition vs Rank (Scatter Plot)
+st.subheader("💰 Tuition vs College Rank")
+st.caption("Check whether higher tuition is associated with higher college ranking.")
+
+fig1 = px.scatter(filtered_df, x="Tuition", y="Adjusted Rank", color="State",
+                  hover_name="College Name", size="Enrollment Numbers", 
+                  title="Tuition vs Adjusted Rank (Interactive)"
 )
 
-st.plotly_chart(fig_cost, use_container_width=True)
-st.markdown("> **Insight:** Games with higher budgets don’t always guarantee GOTY status — quality still matters.")
+st.plotly_chart(fig1, use_container_width=True)
 
+# ---------------------------
+# Visual 2: Enrollment Distribution by State (Bar Chart)
+st.subheader("🏫 Enrollment Distribution by State")
 
-# =======================================
-# SECTION 2: Sales Over Time (Line Chart)
-# =======================================
-st.subheader("📈 Global Video Game Sales History")
+state_enrollment = filtered_df.groupby("State")["Enrollment Numbers"].sum().reset_index()
 
-sales_df = pd.read_csv("10salehistory.csv")
-
-def convert_sales(value):
-    if isinstance(value, str) and "m" in value:
-        return float(value.replace("m", "")) * 1_000_000
-    return None
-
-for col in sales_df.columns[1:]:
-    sales_df[col] = sales_df[col].apply(convert_sales)
-
-sales_melted = sales_df.melt(id_vars=["Video Games"], var_name="Year", value_name="Units Sold")
-
-# Year selector
-year_options = sorted(sales_melted["Year"].unique())
-selected_year = st.selectbox("Select Year", year_options, key="year_select")
-
-filtered_sales_df = sales_melted[sales_melted["Year"] == selected_year]
-
-fig_sales = px.line(
-    filtered_sales_df,
-    x="Year",
-    y="Units Sold",
-    color="Video Games",
-    title="Sales Over Time (2015–2024)",
-    labels={"Year": "Year", "Units Sold": "Units Sold"},
-    hover_name="Video Games",
-    hover_data=["Units Sold"]
+fig2 = px.bar(state_enrollment, x="State", y="Enrollment Numbers",
+              title="Total Enrollment by State", labels={"Enrollment Numbers": "Total Enrollment", "State": "State"}, 
+              hover_data=["Enrollment Numbers"], color="Enrollment Numbers",
+              color_continuous_scale="Blues"
 )
 
-st.plotly_chart(fig_sales, use_container_width=True)
-st.markdown("> **Observation:** Some franchises sustain long-term sales growth through expansions and updates.")
+st.plotly_chart(fig2, use_container_width=True)
 
+# ---------------------------
+# Visual 3: Top Colleges by Tuition (Horizontal Bar)
+st.subheader("🎓 Top 10 Colleges by Tuition")
 
-# =======================================
-# SECTION 3: Ratings and Reviews (Donut Chart)
-# =======================================
-st.subheader("⭐ Ratings and Reviews")
+top10_tuition = filtered_df.sort_values("Tuition", ascending=False).head(10)
 
-rating_df = pd.read_csv("rating.csv")
-
-rating_df["Rating"] = rating_df["Rating"].str.replace("%", "").astype(float)
-rating_df["Reviews"] = rating_df["Reviews"].astype(int)
-rating_df["Positive Rating"] = rating_df["Reviews"] * (rating_df["Rating"] / 100)
-rating_df["Negative Rating"] = rating_df["Reviews"] - rating_df["Positive Rating"]
-
-rating_melted = pd.melt(
-    rating_df,
-    id_vars=["Video Games"],
-    value_vars=["Positive Rating", "Negative Rating"],
-    var_name="Rating Type",
-    value_name="Count"
+fig3 = px.bar(top10_tuition, x="Tuition", y="College Name", orientation="h", 
+              color="Adjusted Rank", color_continuous_scale="Viridis", 
+              title="Top 10 Colleges with Highest Tuition", 
+              hover_data=["State", "Adjusted Rank", "Enrollment Numbers"]
 )
 
-title_options = sorted(rating_melted["Video Games"].unique())
-selected_title = st.selectbox("Select Game", title_options, key="rating_select")
+st.plotly_chart(fig3, use_container_width=True)
 
-filtered_rating_df = rating_melted[rating_melted["Video Games"] == selected_title]
+# ---------------------------
+# Visual 4: Geographical Distribution (Choropleth)
+st.subheader("🗺️ Number of Ranked Colleges by State")
 
-fig_rating = px.pie(
-    filtered_rating_df,
-    names="Rating Type",
-    values="Count",
-    title=f"Positive vs Negative Reviews for {selected_title}",
-    hole=0.4,
-    color="Rating Type",
-    color_discrete_map={"Positive Rating": "green", "Negative Rating": "red"},
+state_counts = filtered_df.groupby("State").size().reset_index(name="College Count")
+
+fig4 = px.choropleth(state_counts, locations="State", locationmode="USA-states", 
+                     color="College Count", color_continuous_scale="Blues",
+                     scope="usa", title="Number of Ranked Colleges per State"
 )
 
-st.plotly_chart(fig_rating, use_container_width=True)
-st.markdown("> **Insight:** Even top-rated games receive negative feedback — balancing user expectations is key.")
+st.plotly_chart(fig4, use_container_width=True)
 
+# ---------------------------
+# Narrative Insights
+st.subheader("📌 Insights & Observations")
 
-# =======================================
-# SECTION 4: Global Popularity (Geoplot)
-# =======================================
-st.subheader("🌍 Most Played Video Game by Country")
+st.markdown("""
+- Colleges with the highest tuition are not always the top-ranked.
+- States with larger populations tend to have more ranked colleges.
+- Enrollment varies widely even among top-ranked colleges.
+- Filtering by state and rank allows comparison of regional patterns and tuition trends.
+- There is a mix of high-tuition, high-enrollment, and mid-ranked colleges across the US.
+""")
 
-geo_df = pd.read_csv("most_played_game_by_country.csv")
-geo_df["Players (millions)"].fillna(0, inplace=True)
-
-fig_geo = px.choropleth(
-    geo_df,
-    locations="Country",
-    locationmode="country names",
-    color="Most Played Game",
-    hover_name="Country",
-    hover_data={"Players (millions)": True, "Most Played Game": True},
-    title="Most Played Video Game Around the World",
-    color_discrete_sequence=px.colors.qualitative.Set3,
-)
-
-fig_geo.update_layout(
-    geo=dict(showframe=False, showcoastlines=True, projection_type="natural earth"),
-    margin=dict(l=0, r=0, t=50, b=0),
-)
-
-st.plotly_chart(fig_geo, use_container_width=True)
-st.markdown("> **Global Trend:** Player preferences vary by region — with distinct top games in Asia, Europe, and the Americas.")
+# ---------------------------
+# Data Source & Last Refresh
+st.markdown("---")
+st.markdown("**Data Source:** https://www.kaggle.com/datasets/dylankarmin/2022-college-rankings-compared-to-tuition-costs")
+st.markdown(f"**Last refreshed:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
