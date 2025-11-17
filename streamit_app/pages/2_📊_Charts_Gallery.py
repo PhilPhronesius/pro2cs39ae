@@ -39,7 +39,7 @@ else:
 
 st.write(df.head())
 
-fig_cost = px.scatter(df, x = "Tuition", y = "College Name", color = "Color",
+fig_cost = px.scatter(filtered_df, x = "Tuition", y = "College Name", color = "Color",
              title = "Tuition Cost / College",
              labels = {"College Name": "College", "Tuition": "Tuition($)"},
              color_discrete_map = {"gold": "gold", "blue": "blue"},
@@ -88,7 +88,7 @@ heatmap_df = df.pivot_table(index="College Name", columns="Adjusted Rank", value
 fig_heatmap = px.imshow(
     heatmap_df,
     labels={"x": "Rank", "y": "College", "color": "Enrollment Numbers"},
-    color_continuous_scale="Y1GnBu",
+    color_continuous_scale="YlGnBu",
     title="Enrollment Heatmap by College and Rank"
 )
 
