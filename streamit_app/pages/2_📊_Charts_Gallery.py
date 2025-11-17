@@ -17,7 +17,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 #-----------------------------------------------------------------------------------------------
-# 1. Bar chart of tuition v college
+# 1. scatter chart of tuition v college
 st.title("Tuition Costs of U.S. Colleges (2022)")
 st.caption("Exploring whether higher tuition correlates with higher ranking.")
 
@@ -40,7 +40,7 @@ fig_cost = px.scatter(df, x = "Tuition", y = "College Name", color = "Color",
 st.plotly_chart(fig_cost, use_container_width=True)
 
 statement1 = [
-    "The bar chart above helps answering our questions of whether higher tuition correlates with higher rankings."
+    "The scatter chart above helps answering our questions of whether higher tuition correlates with higher rankings."
 ]
 
 read1 = [
@@ -158,7 +158,7 @@ for i, f in enumerate(insight3, start=1):
     st.write(f"- {f}")
 
 #------------------------------------------------------------------------------------------------------------
-# 4. choropleth to show amount of ranked colleges / state
+# 4. bar to show amount of ranked colleges / state
 st.title("Aggregate Analysis by Rank Tier")
 st.caption("Summarizing tuition and enrollment based on rank tiers.")
 
@@ -197,12 +197,13 @@ fig_enroll_tier = px.bar(tier_summary, x="Rank Tier", y="Total_Enrollment",
 st.plotly_chart(fig_enroll_tier, use_container_width=True)
 
 statement4 = [
-    "The choropleth map supports our question about how geography impacts rank and tuition."
+    "The bar charts above summarize college enrollment and tuition based on rank tiers."
 ]
 
 read4 = [
-    "Darker blue states have more ranked colleges.",
-    "This can reveal educational hubs and regional inequalities."
+    "The first chart shows average tuition by rank tier.",
+    "The second chart shows total enrollment by rank tier.",
+    "Rank tiers are divided into Top 10, 11-50, and 51+."
 ]
 
 insight4 = [
