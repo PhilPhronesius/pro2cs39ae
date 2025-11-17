@@ -81,18 +81,30 @@ for i, f in enumerate(insight1, start=1):
 st.title("Enrollment Numbers Heatmap by College Rank")
 st.caption("Visualizing how enrollment varies across colleges and their ranks.")
 
-# Pivot the data to get ranks on columns and colleges on rows
-heatmap_df = df.pivot_table(index="College Name", values="Enrollment Numbers", aggfunc="sum")
+# Create rank tiers to categorize colleges into different rank ranges
+def rank_tier(rank):
+    if rank <= 10:
+        return "Top 10"
+    elif rank <= 50:
+        return "11-50"
+    else:
+        return "51+"
 
-# Create heatmap
+df["Rank Tier"] = df["Adjusted Rank"].apply(rank_tier)
+
+# Pivot the data to get colleges on rows and rank tiers on columns, with the enrollment numbers as values
+heatmap_df = df.pivot_table(index="College Name", columns="Rank Tier", values="Enrollment Numbers", aggfunc="sum")
+
+# Create heatmap focusing on enrollment numbers across rank tiers
 fig_heatmap = px.imshow(
-    heatmap_df.T,
-    labels={"x": "College", "y": "Enrollment Numbers"},
-    color_continuous_scale="YlGnBu",
-    title="Enrollment Heatmap by College and Rank"
+    heatmap_df,
+    labels={"x": "Rank Tier", "y": "College", "color": "Enrollment Numbers"},
+    color_continuous_scale="Blues",
+    title="Enrollment Heatmap by Rank Tier"
 )
 
 st.plotly_chart(fig_heatmap, use_container_width=True)
+
 
 # Insights for heatmap
 statement2 = [
