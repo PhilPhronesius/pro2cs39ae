@@ -21,7 +21,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-df = pd.read_csv("data/2022USCollegeRankings.csv")
+df = pd.read_csv("streamlit_app/data/2022USCollegeRankings.csv")
 
 # Fill missing tuition with median
 df["Tuition"].fillna(df["Tuition"].median(), inplace=True)
