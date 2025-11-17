@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import plotly.express as px
 import time
+import os
 
 st.set_page_config(page_title="US College Ranking", page_icon="🎓", layout="wide")
 # Disable fade/transition so charts don't blink between reruns
@@ -20,7 +21,8 @@ st.markdown("""
 st.title("Tuition Costs of U.S. Colleges (2022)")
 st.caption("Exploring whether higher tuition correlates with higher ranking.")
 
-df = pd.read_csv("streamlit_app/data/2022USCollegeRankings.csv")
+csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "2022USCollegeRankings.csv")
+df = pd.read_csv(csv_path)
 
 median_tuition = df["Tuition"].median()
 df["Tuition"].fillna(median_tuition, inplace=True)
