@@ -29,6 +29,14 @@ df["Tuition"].fillna(median_tuition, inplace=True)
 
 df["Color"] = df["Adjusted Rank"].apply(lambda x: "gold" if x <= 10 else "blue")
 
+college_options = df["College Name"].unique()
+selected_college = st.selectbox("Select College"), options = ["All Colleges"] + list(college_options), index = 0)
+
+if selected_college != "All Colleges"]:
+    filtered_df = df[df["College Name"] == selected_college]
+else:
+    filtered_df = df
+
 st.write(df.head())
 
 fig_cost = px.scatter(df, x = "Tuition", y = "College Name", color = "Color",
@@ -46,13 +54,14 @@ statement1 = [
 read1 = [
     "The x-axis represents the tuition cost for each college.",
     "The y-axis lists the colleges included in the dataset.",
-    "Gold-colored bars represent top 10 colleges, while blue bars represent all others."
+    "Gold-colored bars represent top 10 colleges, while blue bars represent all others.",
+    "Hover mode and college selection is available for this chart."
 ]
 
 insight1 = [
-    "",
-    "",
-    ""
+    "Most colleges in the Top 10 are high in tuition.",
+    "Some colleges have high tuition, but low ranking.",
+    "University of Florida has a tuition of ~$28K with a ranking of 28."
 ]
 
 st.markdown("### Statement:")
@@ -79,7 +88,7 @@ heatmap_df = df.pivot_table(index="College Name", columns="Adjusted Rank", value
 fig_heatmap = px.imshow(
     heatmap_df,
     labels={"x": "Rank", "y": "College", "color": "Enrollment Numbers"},
-    color_continuous_scale="Blues",
+    color_continuous_scale="Y1GnBu",
     title="Enrollment Heatmap by College and Rank"
 )
 
@@ -93,12 +102,13 @@ statement2 = [
 read2 = [
     "The x-axis shows college ranks.",
     "The y-axis lists colleges.",
-    "Lighter blue shades represent higher enrollment numbers, and darker shades indicate lower enrollment."
+    "Lighter blue shades represent lower enrollment numbers, and darker shades indicate higher enrollment."
+    "Zooming in is allowed."
 ]
 
 insight2 = [
-    "",
-    "",
+    "University of Central Florida has enrollment of ~62k students, but low ranking.",
+    "The top 10 colleges have lower enrollments.",
     ""
 ]
 
