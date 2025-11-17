@@ -154,16 +154,42 @@ for i, f in enumerate(insight3, start=1):
 
 #------------------------------------------------------------------------------------------------------------
 # 4. choropleth to show amount of ranked colleges / state
-st.title("Geographical Distribution of Ranked Colleges")
-st.caption("A map showing how many top-ranked colleges are found in each U.S. state.")
+st.title("Aggregate Analysis by Rank Tier")
+st.caption("Summarizing tuition and enrollment based on rank tiers.")
 
-state_counts = df.groupby("State").size().reset_index(name="College Count")
+# Create rank tiers
+def rank_tier(rank):
+    if rank <= 10:
+        return "Top 10"
+    elif rank <= 50:
+        return "11-50"
+    else:
+        return "51+"
 
-fig_geo = px.choropleth(state_counts, locations="State", locationmode = "USA-states", color = "College Count",
-                        scope = "usa", title = "Number of Ranked Colleges / State",
-                        color_continuous_scale="Blues")
+df["Rank Tier"] = df["Adjusted Rank"].apply(rank_tier)
 
-st.plotly_chart(fig_geo, use_container_width = True)
+# Summarize tuition and enrollment
+tier_summary = df.groupby("Rank Tier").agg(
+    Avg_Tuition=("Tuition", "mean"),
+    Total_Enrollment=("Enrollment Numbers", "sum"),
+    Count=("College Name", "count")
+).reset_index()
+
+st.write(tier_summary)
+
+# Bar chart: Average Tuition by Rank Tier
+fig_tuition_tier = px.scatter(tier_summary, x="Rank Tier", y="Avg_Tuition", 
+                              title="Average Tuition by Rank Tier",
+                              labels={"Avg_Tuition": "Average Tuition ($)"}
+)
+st.plotly_chart(fig_tuition_tier, use_container_width=True)
+
+# Bar chart: Total Enrollment by Rank Tier
+fig_enroll_tier = px.scatter(tier_summary, x="Rank Tier", y="Total_Enrollment",
+                             title="Total Enrollment by Rank Tier",
+                             labels={"Total_Enrollment": "Total Enrollment"}
+)
+st.plotly_chart(fig_enroll_tier, use_container_width=True)
 
 statement4 = [
     "The choropleth map supports our question about how geography impacts rank and tuition."
