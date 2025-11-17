@@ -35,7 +35,7 @@ fig_cost = px.bar(df, x = "Tuition", y = "College Name", color = "Color",
              title = "Tuition Cost / College",
              labels = {"College Name": "College", "Tuition": "Tuition($)"},
              color_discrete_map = {"gold": "gold", "blue": "blue"},
-             hover_name = "College Name", hover_data = ["Tuition", "Adjusted Ranking"])
+             hover_name = "College Name", hover_data = ["Tuition", "Adjusted Rank"])
 
 st.plotly_chart(fig_cost, use_container_width=True)
 
