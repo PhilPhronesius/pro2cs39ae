@@ -31,7 +31,7 @@ df["Color"] = df["Adjusted Rank"].apply(lambda x: "gold" if x <= 10 else "blue")
 
 st.write(df.head())
 
-fig_cost = px.bar(df, x = "Tuition", y = "College Name", color = "Color",
+fig_cost = px.scatter(df, x = "Tuition", y = "College Name", color = "Color",
              title = "Tuition Cost / College",
              labels = {"College Name": "College", "Tuition": "Tuition($)"},
              color_discrete_map = {"gold": "gold", "blue": "blue"},
@@ -178,14 +178,14 @@ tier_summary = df.groupby("Rank Tier").agg(
 st.write(tier_summary)
 
 # Bar chart: Average Tuition by Rank Tier
-fig_tuition_tier = px.scatter(tier_summary, x="Rank Tier", y="Avg_Tuition", 
+fig_tuition_tier = px.bar(tier_summary, x="Rank Tier", y="Avg_Tuition", 
                               title="Average Tuition by Rank Tier",
                               labels={"Avg_Tuition": "Average Tuition ($)"}
 )
 st.plotly_chart(fig_tuition_tier, use_container_width=True)
 
 # Bar chart: Total Enrollment by Rank Tier
-fig_enroll_tier = px.scatter(tier_summary, x="Rank Tier", y="Total_Enrollment",
+fig_enroll_tier = px.bar(tier_summary, x="Rank Tier", y="Total_Enrollment",
                              title="Total Enrollment by Rank Tier",
                              labels={"Total_Enrollment": "Total Enrollment"}
 )
