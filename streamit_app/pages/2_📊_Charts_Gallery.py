@@ -109,7 +109,7 @@ read2 = [
 insight2 = [
     "University of Central Florida has enrollment of ~62k students, but low ranking.",
     "The top 10 colleges have lower enrollments.",
-    ""
+    "There are higher enrollments the more the rank decreases."
 ]
 
 st.markdown("### Statement:")
@@ -126,15 +126,15 @@ for i, f in enumerate(insight2, start=1):
 
 #--------------------------------------------------------------------------------------------------------------------
 # 3. Donut pie chart for tuition distribution among the top 10
-st.title("Tuition Distribution of Top 10 Colleges")
+st.title("Tuition Distribution of Top 6 Colleges")
 st.caption("Visualizing how tuition amounts compare among the highest-ranked colleges.")
 
-top10 = df.sort_values("Adjusted Rank").head(10)
+top6 = df.sort_values("Adjusted Rank").head(6)
 
 donut_df = top10[["College Name", "Tuition"]]
 
 fig_rating = px.pie(donut_df, names = "College Name", values = "Tuition",
-                    title = "Top 10 Colleges — Tuition Distribution",
+                    title = "Top 6 Colleges — Tuition Distribution",
                     hole = 0.4)
 
 st.plotly_chart(fig_rating, use_container_width = True)
@@ -150,9 +150,9 @@ read3 = [
 ]
 
 insight3 = [
-    "",
-    "",
-    ""
+    "The tuition for the top 6 are similar to one another.",
+    "The highest tuition is ~63k for Columbia University.",
+    "None of the top 6 are less than $55k."
 ]
 
 st.markdown("### Statement:")
@@ -217,9 +217,9 @@ read4 = [
 ]
 
 insight4 = [
-    "",
-    "",
-    ""
+    "The higher we go in rank, the less enrollments there are.",
+    "The total enrollment from ranks 1-50 is ~80k students.",
+    "The average tuition cost of rank 11-50 costs almost teh same amount as the top 10."
 ]
 
 st.markdown("### Statement:")
