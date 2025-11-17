@@ -82,12 +82,12 @@ st.title("Enrollment Numbers Heatmap by College Rank")
 st.caption("Visualizing how enrollment varies across colleges and their ranks.")
 
 # Pivot the data to get ranks on columns and colleges on rows
-heatmap_df = df.pivot_table(index="College Name", columns="Adjusted Rank", values="Enrollment Numbers", aggfunc="sum")
+heatmap_df = df.pivot_table(index="College Name", values="Enrollment Numbers", aggfunc="sum")
 
 # Create heatmap
 fig_heatmap = px.imshow(
     heatmap_df,
-    labels={"x": "Rank", "y": "College", "color": "Enrollment Numbers"},
+    labels={"x": "College", "y": "Enrollment Numbers"},
     color_continuous_scale="YlGnBu",
     title="Enrollment Heatmap by College and Rank"
 )
@@ -102,7 +102,7 @@ statement2 = [
 read2 = [
     "The x-axis shows college ranks.",
     "The y-axis lists colleges.",
-    "Lighter blue shades represent lower enrollment numbers, and darker shades indicate higher enrollment."
+    "Lighter color shades represent lower enrollment numbers, and darker shades indicate higher enrollment."
     "Zooming in is allowed."
 ]
 
