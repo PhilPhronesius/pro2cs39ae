@@ -68,27 +68,32 @@ for i, f in enumerate(insight1, start=1):
     st.write(f"- {f}")
 
 #---------------------------------------------------------------------------------------
-# 2. line chart of enrollment v rank
-st.title("Enrollment Trends by College Rank")
-st.caption("Visualizing how enrollment size compares across ranking positions.")
+# 2. heatmap of enrollment by rank
+st.title("Enrollment Numbers Heatmap by College Rank")
+st.caption("Visualizing how enrollment varies across colleges and their ranks.")
 
-rank_enroll_df = df.sort_values("Adjusted Rank").head(20)
+# Pivot the data to get ranks on columns and colleges on rows
+heatmap_df = df.pivot_table(index="College Name", columns="Adjusted Rank", values="Enrollment Numbers", aggfunc="sum")
 
-fig_sales = px.line(rank_enroll_df, x = "Adjusted Rank", y = "Enrollment Numbers",
-                    title = "Enrollment Numbers by College Ranking",
-                    labels = {"Adjusted Rank": "Rank", "Enrollment Numbers": "Enrollment"},
-                    hover_name = "College Name", color="College Name")
+# Create heatmap
+fig_heatmap = px.imshow(
+    heatmap_df,
+    labels={"x": "Rank", "y": "College", "color": "Enrollment Numbers"},
+    color_continuous_scale="Blues",
+    title="Enrollment Heatmap by College and Rank"
+)
 
-st.plotly_chart(fig_sales, use_container_width = True)
+st.plotly_chart(fig_heatmap, use_container_width=True)
 
+# Insights for heatmap
 statement2 = [
-    "The line chart above helps answering our questions about whether enrollment size affects college ranking."
+    "The heatmap above shows the distribution of enrollment across colleges ranked in various tiers."
 ]
 
 read2 = [
-    "The x-axis shows the ranking from 1 to 20.",
-    "The y-axis shows the number of enrolled students.",
-    "Each line represents one college, allowing comparison across ranks."
+    "The x-axis shows college ranks.",
+    "The y-axis lists colleges.",
+    "Lighter blue shades represent higher enrollment numbers, and darker shades indicate lower enrollment."
 ]
 
 insight2 = [
